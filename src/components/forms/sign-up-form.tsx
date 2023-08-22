@@ -25,11 +25,12 @@ import ImageUpload from "../ui/image-upload";
 const SignUpForm = () => {
   const router = useRouter();
   const { mutate, isLoading } = useMutation({
-    mutationFn: async ({ name, email, password }: SignUpType) => {
-      const payload: SignUpType = {
+    mutationFn: async ({ name, email, password, image }: SignUpType) => {
+      const payload = {
         name,
         email,
         password,
+        image,
       };
 
       const { data } = await axios.post("/api/user", payload);
@@ -57,7 +58,7 @@ const SignUpForm = () => {
       name: "",
       email: "",
       password: "",
-      imageUrl: "",
+      image: "",
     },
   });
 
@@ -66,10 +67,11 @@ const SignUpForm = () => {
       name: data.name,
       email: data.email,
       password: data.password,
-      imageUrl: data.imageUrl,
+      image: data.image,
     };
 
     mutate(payload);
+    console.log(payload);
   };
 
   return (
@@ -135,7 +137,7 @@ const SignUpForm = () => {
               )}
             />
             <FormField
-              name="imageUrl"
+              name="image"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
@@ -144,7 +146,7 @@ const SignUpForm = () => {
                     <ImageUpload
                       // @ts-ignore
                       value={[field.value]}
-                      onChange={(url) => field.onChange(url)}
+                      onChange={field.onChange}
                       onRemove={() => field.onChange("")}
                       disabled={isLoading}
                     />

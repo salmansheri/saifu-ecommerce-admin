@@ -6,7 +6,7 @@ export const SignUpValidation = z.object({
   password: z
     .string()
     .min(3, { message: "password must be at least 3 characters" }),
-  imageUrl: z.string().optional(),
+  image: z.string().optional(),
 });
 export const SignInValidation = z.object({
   email: z.string().email({ message: "Enter Valid Email Address" }),

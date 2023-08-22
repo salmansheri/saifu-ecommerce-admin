@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const { email, name, password, imageUrl } = SignUpValidation.parse(body);
+    const { email, name, password, image } = SignUpValidation.parse(body);
 
     if (!email || !name || !password) {
       return new Response("Invalid details", {
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
         name,
         email,
         hashedPassword,
-        image: imageUrl,
+        image,
       },
     });
 
