@@ -52,13 +52,16 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
 
       if (initialData) {
         const { data } = await axios.patch(
-          `/api/billboard/${initialData.id}`,
+          `/api/store/${params.storeId}/billboard/${initialData.id}`,
           payload
         );
 
         return data;
       } else {
-        const { data } = await axios.post("/api/billboard", payload);
+        const { data } = await axios.post(
+          `/api/store/${params.storeId}/billboard`,
+          payload
+        );
 
         return data;
       }
