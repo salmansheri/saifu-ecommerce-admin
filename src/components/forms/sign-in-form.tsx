@@ -1,15 +1,8 @@
 "use client";
 
-import { toast } from "@/hooks/use-toast";
-import {
-  SignInType,
-  SignUpType,
-  SignUpValidation,
-} from "@/lib/validations/user";
+import { SignInType, SignInValidation } from "@/lib/validations/user";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
@@ -25,20 +18,20 @@ import {
 import { Input } from "../ui/input";
 
 const SignInForm = () => {
-  const router = useRouter();
-
-  const form = useForm<SignUpType>({
+  const form = useForm<SignInType>({
     // @ts-ignore
-    resolver: zodResolver(SignUpValidation),
+    resolver: zodResolver(SignInValidation),
     defaultValues: {
-      name: "",
       email: "",
       password: "",
     },
   });
 
   const onSubmit: SubmitHandler<SignInType> = (data: SignInType) => {
-    console.log(data);
+    signIn("credentials", {
+      ...data,
+      callbackUrl: "/",
+    });
   };
 
   const isLoading = form.formState.isSubmitting;
