@@ -3,7 +3,7 @@
 import React from "react";
 
 interface ApiInterface {
-  title: string;
+  title?: string;
 }
 
 const Api: React.FC<ApiInterface> = ({ title }) => {
