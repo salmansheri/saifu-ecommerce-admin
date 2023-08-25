@@ -1,7 +1,16 @@
 "use client";
 
-import { Billboard, Store } from "@prisma/client";
+import { toast } from "@/hooks/use-toast";
+import { CategoryType, CategoryValidation } from "@/lib/validations/category";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Category, Color, Store } from "@prisma/client";
+import { TrashIcon, UpdateIcon } from "@radix-ui/react-icons";
+import { useMutation } from "@tanstack/react-query";
+import axios, { AxiosError } from "axios";
+import { useParams, useRouter } from "next/navigation";
 import React from "react";
+import { useForm } from "react-hook-form";
+import { Button } from "../ui/button";
 import {
   Card,
   CardContent,
@@ -9,57 +18,52 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { StoreType, StoreValidation } from "@/lib/validations/store";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { useParams, useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
-import { toast } from "@/hooks/use-toast";
-import { TrashIcon, UpdateIcon } from "@radix-ui/react-icons";
 import {
-  BillboardType,
-  BillboardValidation,
-} from "@/lib/validations/billboard";
-import ImageUpload from "../ui/image-upload";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { ColorType, ColorValidation } from "@/lib/validations/colors";
 
-interface BillboardFormProps {
-  initialData?: Billboard;
+interface ColorFormProps {
+  initialData?: Color | null;
+  colors?: Color[];
 }
 
-const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
+const ColorForm: React.FC<ColorFormProps> = ({ initialData, colors }) => {
   const params = useParams();
   const router = useRouter();
-  const form = useForm<BillboardType>({
+  const form = useForm<ColorType>({
     // @ts-ignore
-    resolver: zodResolver(BillboardValidation),
+    resolver: zodResolver(ColorValidation),
     defaultValues: initialData || {
-      imageUrl: "",
-      label: "",
+      value: "",
+      name: "",
     },
   });
 
   const { mutate, isLoading } = useMutation({
-    mutationFn: async ({ imageUrl, label }: BillboardType) => {
+    mutationFn: async ({ value, name }: ColorType) => {
       const payload = {
-        label,
-        imageUrl,
+        value,
+        name,
         storeId: params.storeId,
       };
 
       if (initialData) {
         const { data } = await axios.patch(
-          `/api/store/${params.storeId}/billboard/${initialData.id}`,
+          `/api/store/${params.storeId}/colors/${initialData.id}`,
           payload
         );
 
         return data;
       } else {
         const { data } = await axios.post(
-          `/api/store/${params.storeId}/billboard`,
+          `/api/store/${params.storeId}/colors`,
           payload
         );
 
@@ -106,11 +110,11 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
         variant: "destructive",
       });
     },
-    onSuccess: (data: Store) => {
-      router.push(`/store/${params.storeId}/billboard`);
+    onSuccess: (data) => {
+      router.push(`/store/${params.storeId}/colors`);
       router.refresh();
       return toast({
-        title: "Billboard Successfully Created",
+        title: "Color  Successfully Created",
       });
     },
   });
@@ -118,7 +122,7 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
   const { mutate: onDelete } = useMutation({
     mutationFn: async () => {
       await axios.delete(
-        `/api/store/${params.storeId}/billboard/${initialData?.id}`
+        `/api/store/${params.storeId}/colors/${initialData?.id}`
       );
     },
     onError: (error) => {
@@ -130,6 +134,7 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
     },
     onSuccess: () => {
       router.refresh();
+      router.push(`/store/${params.storeId}/colors`);
       return toast({
         title: "Deleted Successfully",
         description: "Store Deleted Successfully",
@@ -137,10 +142,10 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
     },
   });
 
-  const onSubmit = (data: BillboardType) => {
-    const payload: BillboardType = {
-      imageUrl: data.imageUrl,
-      label: data.label,
+  const onSubmit = (data: ColorType) => {
+    const payload: ColorType = {
+      value: data.value,
+      name: data.name,
     };
 
     mutate(payload);
@@ -150,12 +155,12 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
       <CardHeader>
         <div>
           <CardTitle className="text-3xl">
-            {initialData ? "Update Billboard" : " Create Billboard"}
+            {initialData ? "Update Colors" : " Create Colors"}
           </CardTitle>
           <CardDescription>
             {initialData
-              ? "Update Your Billboard"
-              : "Create Your Billboard to Continue"}
+              ? "Update Your Colors"
+              : "Create Your Colors to Continue"}
           </CardDescription>
         </div>
         {initialData && (
@@ -169,17 +174,15 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
               control={form.control}
-              name="imageUrl"
+              name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Image</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <ImageUpload
-                      // @ts-ignore
-                      value={[field.value]}
-                      onChange={field.onChange}
-                      onRemove={() => field.onChange("")}
+                    <Input
                       disabled={isLoading}
+                      placeholder="eg: black"
+                      {...field}
                     />
                   </FormControl>
                 </FormItem>
@@ -187,20 +190,27 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
             />
             <FormField
               control={form.control}
-              name="label"
+              name="value"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Label</FormLabel>
+                <FormItem className="">
+                  <FormLabel>Value</FormLabel>
                   <FormControl>
                     <Input
                       disabled={isLoading}
-                      placeholder="eg: Super Stores"
+                      placeholder="eg: #111"
                       {...field}
                     />
                   </FormControl>
+                  <div
+                    className="h-9 w-9 rounded-full"
+                    style={{
+                      backgroundColor: field.value,
+                    }}
+                  ></div>
                 </FormItem>
               )}
             />
+
             <div>
               <Button
                 disabled={isLoading}
@@ -224,4 +234,4 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
   );
 };
 
-export default BillboardForm;
+export default ColorForm;

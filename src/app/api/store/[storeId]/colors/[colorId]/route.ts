@@ -2,10 +2,13 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/actions/user";
 import * as z from "zod";
 import { StoreValidation } from "@/lib/validations/store";
+import { CategoryColumn } from "@/app/(root)/(routes)/store/[storeId]/categories/[categoriesId]/components/column";
+import { CategoryValidation } from "@/lib/validations/category";
+import { ColorValidation } from "@/lib/validations/colors";
 
 export async function GET(
   request: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { storeId: string; colorId: string } }
 ) {
   try {
     const currentUser = await getCurrentUser();
@@ -16,13 +19,13 @@ export async function GET(
       });
     }
 
-    const store = await prisma.store.findUnique({
+    const color = await prisma.color.findUnique({
       where: {
-        id: params.storeId,
+        id: params.colorId,
       },
     });
 
-    return new Response(JSON.stringify(store), {
+    return new Response(JSON.stringify(color), {
       status: 200,
     });
   } catch (error) {
@@ -32,7 +35,7 @@ export async function GET(
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { storeId: string; colorId: string } }
 ) {
   try {
     const currentUser = await getCurrentUser();
@@ -44,24 +47,19 @@ export async function PATCH(
     }
     const body = await request.json();
 
-    const { name } = StoreValidation.parse(body);
+    const { name, value } = ColorValidation.parse(body);
 
-    if (!name) {
-      return new Response("Invalid data", {
-        status: 400,
-      });
-    }
-
-    const store = await prisma.store.update({
+    const color = await prisma.color.update({
       where: {
-        id: params.storeId,
+        id: params.colorId,
       },
       data: {
         name,
+        value,
       },
     });
 
-    return new Response(JSON.stringify(store));
+    return new Response(JSON.stringify(color));
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response("Not Allowed", {
@@ -76,7 +74,7 @@ export async function PATCH(
 }
 export async function DELETE(
   request: Request,
-  { params }: { params: { storeId: string; billboardId: string } }
+  { params }: { params: { storeId: string; colorId: string } }
 ) {
   try {
     const currentUser = await getCurrentUser();
@@ -87,18 +85,18 @@ export async function DELETE(
       });
     }
 
-    const billboard = await prisma.billboard.delete({
+    const color = await prisma.color.delete({
       where: {
-        id: params.billboardId,
+        id: params.colorId,
       },
     });
 
-    return new Response(JSON.stringify(billboard), {
+    return new Response(JSON.stringify(color), {
       status: 200,
     });
   } catch (error) {
     console.log(error);
-    console.log(params.billboardId);
+    console.log(params.colorId);
 
     return new Response("Internal Server Error", {
       status: 500,

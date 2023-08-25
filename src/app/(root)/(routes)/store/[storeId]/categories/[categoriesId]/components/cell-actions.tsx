@@ -15,19 +15,39 @@ import {
   TrashIcon,
   UpdateIcon,
 } from "@radix-ui/react-icons";
-import { BillboardColumnType } from "./column";
+import { CategoryColumsType } from "./column";
 import { CopyIcon } from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
+import { useRouter, useParams } from "next/navigation";
+import { toast } from "@/hooks/use-toast";
+import axios from "axios";
+
 interface CellActionsType {
-  data: BillboardColumnType;
+  data: CategoryColumsType;
 }
 
 const CellActions: React.FC<CellActionsType> = ({ data }) => {
-  const { mutate: onUpdate } = useMutation({
-    mutationFn: async () => {},
-  });
+  const router = useRouter();
+  const params = useParams();
+
   const { mutate: onDelete } = useMutation({
-    mutationFn: async () => {},
+    mutationFn: async () => {
+      await axios.delete(`/api/store/${params.storeId}/categories/${data.id}`);
+    },
+    onError: (error) => {
+      return toast({
+        title: "Cannot Delete",
+        description: "Please Try Again",
+        variant: "destructive",
+      });
+    },
+    onSuccess: () => {
+      router.refresh();
+      return toast({
+        title: "Deleted Successfully",
+        description: "Store Deleted Successfully",
+      });
+    },
   });
   return (
     <DropdownMenu>
@@ -47,10 +67,15 @@ const CellActions: React.FC<CellActionsType> = ({ data }) => {
           Copy Billboard ID
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="flex gap-x-2">
+        <DropdownMenuItem className="flex gap-x-2" onClick={() => onDelete()}>
           <TrashIcon className="text-red-500 h-6 w-6" /> Delete
         </DropdownMenuItem>
-        <DropdownMenuItem className="flex gap-x-2">
+        <DropdownMenuItem
+          className="flex gap-x-2"
+          onClick={() =>
+            router.push(`/store/${params.storeId}/categories/${data.id}/update`)
+          }
+        >
           <UpdateIcon className="text-blue-500 h-6 w-6" />
           Update
         </DropdownMenuItem>

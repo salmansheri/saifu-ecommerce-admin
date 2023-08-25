@@ -23,6 +23,16 @@ const MainNav: React.FC<MainNavProps> = ({ storeId }) => {
       title: "Billboard",
       href: `/store/${storeId}/billboard`,
     },
+    {
+      id: 3,
+      title: "Categories",
+      href: `/store/${storeId}/categories`,
+    },
+    {
+      id: 3,
+      title: "Colors",
+      href: `/store/${storeId}/colors`,
+    },
   ];
 
   return (

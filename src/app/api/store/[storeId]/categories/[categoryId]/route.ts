@@ -2,6 +2,8 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/actions/user";
 import * as z from "zod";
 import { StoreValidation } from "@/lib/validations/store";
+import { CategoryColumn } from "@/app/(root)/(routes)/store/[storeId]/categories/[categoriesId]/components/column";
+import { CategoryValidation } from "@/lib/validations/category";
 
 export async function GET(
   request: Request,
@@ -16,13 +18,13 @@ export async function GET(
       });
     }
 
-    const store = await prisma.store.findUnique({
+    const category = await prisma.category.findUnique({
       where: {
         id: params.storeId,
       },
     });
 
-    return new Response(JSON.stringify(store), {
+    return new Response(JSON.stringify(category), {
       status: 200,
     });
   } catch (error) {
@@ -32,7 +34,7 @@ export async function GET(
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { storeId: string; categoryId: string } }
 ) {
   try {
     const currentUser = await getCurrentUser();
@@ -44,24 +46,19 @@ export async function PATCH(
     }
     const body = await request.json();
 
-    const { name } = StoreValidation.parse(body);
+    const { name, billboardId } = CategoryValidation.parse(body);
 
-    if (!name) {
-      return new Response("Invalid data", {
-        status: 400,
-      });
-    }
-
-    const store = await prisma.store.update({
+    const category = await prisma.category.update({
       where: {
-        id: params.storeId,
+        id: params.categoryId,
       },
       data: {
         name,
+        billboardId,
       },
     });
 
-    return new Response(JSON.stringify(store));
+    return new Response(JSON.stringify(category));
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response("Not Allowed", {
@@ -76,7 +73,7 @@ export async function PATCH(
 }
 export async function DELETE(
   request: Request,
-  { params }: { params: { storeId: string; billboardId: string } }
+  { params }: { params: { storeId: string; categoryId: string } }
 ) {
   try {
     const currentUser = await getCurrentUser();
@@ -87,18 +84,18 @@ export async function DELETE(
       });
     }
 
-    const billboard = await prisma.billboard.delete({
+    const category = await prisma.category.delete({
       where: {
-        id: params.billboardId,
+        id: params.categoryId,
       },
     });
 
-    return new Response(JSON.stringify(billboard), {
+    return new Response(JSON.stringify(category), {
       status: 200,
     });
   } catch (error) {
     console.log(error);
-    console.log(params.billboardId);
+    console.log(params.categoryId);
 
     return new Response("Internal Server Error", {
       status: 500,
