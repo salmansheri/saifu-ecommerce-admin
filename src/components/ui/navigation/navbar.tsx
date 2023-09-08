@@ -10,9 +10,15 @@ import Switcher from "./switcher";
 interface NavbarProps {
   data: Store[] | null;
   store: Store | null;
+  currentUser: {
+    id: string | undefined;
+    name: string | undefined;
+    email: string | undefined;
+    image: string | undefined;
+  };
 }
 
-const Navbar: React.FC<NavbarProps> = ({ data, store }) => {
+const Navbar: React.FC<NavbarProps> = ({ data, store, currentUser }) => {
   const params = useParams();
 
   return (
@@ -21,8 +27,8 @@ const Navbar: React.FC<NavbarProps> = ({ data, store }) => {
         <Switcher stores={data} storeName={store?.name} />
       </div>
       <nav>
-        <MobileNav />
-        <MainNav storeId={params.storeId as string} />
+        <MobileNav user={currentUser} storeId={params.storeId as string} />
+        <MainNav user={currentUser} storeId={params.storeId as string} />
       </nav>
     </header>
   );

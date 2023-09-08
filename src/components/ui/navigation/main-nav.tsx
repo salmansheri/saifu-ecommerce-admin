@@ -4,12 +4,19 @@ import React from "react";
 
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { Button } from "../button";
 
 interface MainNavProps {
   storeId: string;
+  user: {
+    id: string | undefined;
+    name: string | undefined;
+    email: string | undefined;
+    image: string | undefined;
+  };
 }
 
-const MainNav: React.FC<MainNavProps> = ({ storeId }) => {
+const MainNav: React.FC<MainNavProps> = ({ storeId, user }) => {
   const pathname = usePathname();
 
   const routes = [
@@ -29,9 +36,24 @@ const MainNav: React.FC<MainNavProps> = ({ storeId }) => {
       href: `/store/${storeId}/categories`,
     },
     {
-      id: 3,
+      id: 4,
       title: "Colors",
       href: `/store/${storeId}/colors`,
+    },
+    {
+      id: 5,
+      title: "Sizes",
+      href: `/store/${storeId}/sizes`,
+    },
+    {
+      id: 6,
+      title: "Products",
+      href: `/store/${storeId}/products`,
+    },
+    {
+      id: 7,
+      title: "Orders",
+      href: `/store/${storeId}/orders`,
     },
   ];
 
@@ -46,6 +68,7 @@ const MainNav: React.FC<MainNavProps> = ({ storeId }) => {
           {route.title}
         </Link>
       ))}
+      {user ? <Button>Sign out</Button> : <Button>Sign in</Button>}
     </div>
   );
 };

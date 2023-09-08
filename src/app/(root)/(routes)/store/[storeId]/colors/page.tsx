@@ -16,6 +16,12 @@ export default async function ColorPage({
 }) {
   const colors = await getColorsByStoreId(params.storeId);
 
+  const formattedColors = colors.map((color) => ({
+    id: color.id,
+    name: color.name,
+    value: color.value,
+  }));
+
   return (
     <div className="min-h-[calc(100vh-5rem)] max-w-7xl mx-auto px-5">
       <div className="flex flex-row justify-between items-center">
@@ -32,9 +38,9 @@ export default async function ColorPage({
           <PlusIcon className="h-6 w-6" />
         </Link>
       </div>
-      <DataTable columns={ColorColumn} data={colors} />
+      <DataTable columns={ColorColumn} data={formattedColors} />
 
-      <Api title="Categories" />
+      <Api entityIdName="colorId" entityName="colors" />
     </div>
   );
 }

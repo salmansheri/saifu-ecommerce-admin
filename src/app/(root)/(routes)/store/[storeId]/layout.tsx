@@ -19,7 +19,8 @@ export default async function StoreLayout({
   const store = await getStoreById(params.storeId);
   return (
     <div>
-      <Navbar data={stores} store={store} />
+      {/* @ts-ignore  */}
+      <Navbar data={stores} store={store} currentUser={currentUser} />
       {children}
     </div>
   );

@@ -1,21 +1,44 @@
 "use client";
 
 import React from "react";
+import ApiAlert from "./api-alert";
+import { useParams } from "next/navigation";
+import { useOrigin } from "@/hooks/use-origin";
 
 interface ApiInterface {
-  title?: string;
+  entityIdName: string;
+  entityName: string;
 }
 
-const Api: React.FC<ApiInterface> = ({ title }) => {
+const Api: React.FC<ApiInterface> = ({ entityIdName, entityName }) => {
+  const params = useParams();
+
+  const origin = useOrigin();
+  const baseURL = `${origin}/api/${params.storeId}`;
+
   return (
-    <div className="my-16">
-      <div>
-        <h1 className="text-2xl">Api Keys</h1>
-      </div>
-      <div className="mt-5">
-        <h3>Get {title}</h3>
-      </div>
-    </div>
+    <>
+      <ApiAlert
+        title="GET"
+        variant="public"
+        description={`${baseURL}/${entityName}`}
+      />
+      <ApiAlert
+        title="GET"
+        variant="public"
+        description={`${baseURL}/${entityIdName}`}
+      />
+      <ApiAlert
+        title="PATCH"
+        variant="admin"
+        description={`${baseURL}/${entityName}/${entityIdName}`}
+      />
+      <ApiAlert
+        title="DELETE"
+        variant="admin"
+        description={`${baseURL}/${entityName}/${entityIdName}`}
+      />
+    </>
   );
 };
 
