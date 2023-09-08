@@ -15,15 +15,16 @@ import {
   TrashIcon,
   UpdateIcon,
 } from "@radix-ui/react-icons";
-import { BillboardColumnType } from "./column";
+
 import { CopyIcon } from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter, useParams } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import axios from "axios";
+import { ProductsColumnType } from "./column";
 
 interface CellActionsType {
-  data: BillboardColumnType;
+  data: ProductsColumnType;
 }
 
 const CellActions: React.FC<CellActionsType> = ({ data }) => {
