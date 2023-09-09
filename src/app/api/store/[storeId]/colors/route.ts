@@ -7,14 +7,6 @@ import { ColorValidation } from "@/lib/validations/colors";
 
 export async function GET(request: Request) {
   try {
-    const currentUser = await getCurrentUser();
-
-    if (!currentUser) {
-      return new Response("Unauthenticated", {
-        status: 401,
-      });
-    }
-
     const colors = await prisma.color.findMany();
 
     return new Response(JSON.stringify(colors), {

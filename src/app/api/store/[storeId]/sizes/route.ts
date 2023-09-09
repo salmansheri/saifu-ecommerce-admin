@@ -1,21 +1,10 @@
-import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/actions/user";
-import * as z from "zod";
-import { StoreValidation } from "@/lib/validations/store";
-import { CategoryValidation } from "@/lib/validations/category";
-import { ColorValidation } from "@/lib/validations/colors";
+import { prisma } from "@/lib/db";
 import { SizesValidation } from "@/lib/validations/sizes";
+import * as z from "zod";
 
 export async function GET(request: Request) {
   try {
-    const currentUser = await getCurrentUser();
-
-    if (!currentUser) {
-      return new Response("Unauthenticated", {
-        status: 401,
-      });
-    }
-
     const sizes = await prisma.size.findMany();
 
     return new Response(JSON.stringify(sizes), {

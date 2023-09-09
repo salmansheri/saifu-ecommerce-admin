@@ -14,7 +14,7 @@ const Api: React.FC<ApiInterface> = ({ entityIdName, entityName }) => {
   const params = useParams();
 
   const origin = useOrigin();
-  const baseURL = `${origin}/api/${params.storeId}`;
+  const baseURL = `${origin}/api/store/${params.storeId}`;
 
   return (
     <>

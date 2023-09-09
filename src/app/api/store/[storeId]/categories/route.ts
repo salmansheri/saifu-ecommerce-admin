@@ -6,14 +6,6 @@ import { CategoryValidation } from "@/lib/validations/category";
 
 export async function GET(request: Request) {
   try {
-    const currentUser = await getCurrentUser();
-
-    if (!currentUser) {
-      return new Response("Unauthenticated", {
-        status: 401,
-      });
-    }
-
     const categories = await prisma.category.findMany();
 
     return new Response(JSON.stringify(categories), {
