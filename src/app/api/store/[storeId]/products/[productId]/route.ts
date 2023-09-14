@@ -1,25 +1,25 @@
-import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/actions/user";
-import * as z from "zod";
-import { StoreValidation } from "@/lib/validations/store";
+import { prisma } from "@/lib/db";
 import { ProductValidation } from "@/lib/validations/products";
+import * as z from "zod";
 
 export async function GET(
   request: Request,
-  { params }: { params: { storeId: string; productId: string } }
+  { params }: { params: { productId: string } }
 ) {
   try {
-    const currentUser = await getCurrentUser();
-
-    if (!currentUser) {
-      return new Response("Unauthenticated", {
-        status: 401,
-      });
-    }
-
-    const store = await prisma.store.findUnique({
+    const store = await prisma.product.findUnique({
       where: {
-        id: params.storeId,
+        id: params.productId,
+      },
+      include: {
+        images: true,
+        category: true,
+        color: true,
+        gender: true,
+        orderItems: true,
+        size: true,
+        store: true,
       },
     });
 

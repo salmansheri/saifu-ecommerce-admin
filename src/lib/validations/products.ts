@@ -9,6 +9,7 @@ export const ProductValidation = z.object({
   sizeId: z.string().min(1),
   isFeatured: z.boolean().default(false).optional(),
   isArchieved: z.boolean().default(false).optional(),
+  genderId: z.string().min(1),
 });
 
 export type ProductType = z.infer<typeof ProductValidation>;

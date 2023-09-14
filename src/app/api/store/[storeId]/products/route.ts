@@ -5,15 +5,17 @@ import * as z from "zod";
 
 export async function GET(request: Request) {
   try {
-    const currentUser = await getCurrentUser();
-
-    if (!currentUser) {
-      return new Response("Unauthenticated", {
-        status: 401,
-      });
-    }
-
-    const products = await prisma.product.findMany();
+    const products = await prisma.product.findMany({
+      include: {
+        gender: true,
+        category: true,
+        color: true,
+        images: true,
+        orderItems: true,
+        size: true,
+        store: true,
+      },
+    });
 
     return new Response(JSON.stringify(products), {
       status: 200,
@@ -46,6 +48,7 @@ export async function POST(
       sizeId,
       isArchieved,
       isFeatured,
+      genderId,
     } = ProductValidation.parse(body);
 
     const product = await prisma.product.create({
@@ -63,6 +66,7 @@ export async function POST(
         },
         isFeatured,
         isArchieved,
+        genderId,
       },
     });
 
