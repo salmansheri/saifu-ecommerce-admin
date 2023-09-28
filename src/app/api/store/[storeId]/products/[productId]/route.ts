@@ -118,7 +118,6 @@ export async function DELETE(
     });
   } catch (error) {
     console.log(error);
-    console.log(params.productId);
 
     return new Response("Internal Server Error", {
       status: 500,
