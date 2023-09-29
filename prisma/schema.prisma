@@ -144,6 +144,8 @@ model Product {
   orderItems  OrderItem[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+  genderId    String      @db.ObjectId
+  gender      Gender      @relation(fields: [genderId], references: [id])
 }
 
 model Image {
@@ -153,6 +155,21 @@ model Image {
   url       String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum GenderType {
+  men
+  women
+  mobile
+}
+
+model Gender {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  name      GenderType
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  products Product[]
 }
 
 model Order {

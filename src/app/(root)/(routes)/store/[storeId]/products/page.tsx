@@ -1,25 +1,35 @@
-import { BillboardColumns } from "@/app/(root)/(routes)/store/[storeId]/billboard/[billboardId]/components/column";
 import { DataTable } from "@/components/table/data-table";
 import Api from "@/components/ui/api";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import Heading from "@/components/ui/heading";
-import { getBillboardsByStoreId } from "@/lib/actions/billboard";
-import { getProductsByStoreId } from "@/lib/actions/products";
+import { prisma } from "@/lib/db";
 import { cn, formatter } from "@/lib/utils";
 import { PlusIcon } from "@radix-ui/react-icons";
+import { format } from "date-fns";
 import Link from "next/link";
 import {
   ProductsColumnType,
   ProductsColumns,
 } from "./[productId]/components/column";
-import { format } from "date-fns";
 
-export default async function BillboardPage({
+export default async function ProductsPage({
   params,
 }: {
   params: { storeId: string };
 }) {
-  const products = await getProductsByStoreId(params.storeId);
+  const products = await prisma.product.findMany({
+    where: {
+      storeId: params.storeId,
+    },
+    include: {
+      category: true,
+      size: true,
+      color: true,
+      gender: true,
+    },
+  });
+
+  console.log(products);
 
   const formattedProducts: ProductsColumnType[] = products.map((product) => ({
     id: product.id,
@@ -31,6 +41,7 @@ export default async function BillboardPage({
     createdAt: format(product.createdAt, "MMMM do, yyyy"),
     isArchieved: product.isArchieved,
     isFeatured: product.isFeatured,
+    gender: product.gender.name,
   }));
 
   return (

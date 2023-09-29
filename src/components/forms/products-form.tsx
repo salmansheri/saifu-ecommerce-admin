@@ -3,7 +3,15 @@
 import { toast } from "@/hooks/use-toast";
 import { ProductType, ProductValidation } from "@/lib/validations/products";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Category, Color, Image, Product, Size, Store } from "@prisma/client";
+import {
+  Category,
+  Color,
+  Gender,
+  Image,
+  Product,
+  Size,
+  Store,
+} from "@prisma/client";
 import { TrashIcon, UpdateIcon } from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
@@ -39,6 +47,7 @@ interface ProductFormProps {
 
   sizes: Size[];
   colors: Color[];
+  genders: Gender[];
 }
 
 const ProductForm: React.FC<ProductFormProps> = ({
@@ -46,6 +55,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
   categories,
   sizes,
   colors,
+  genders,
 }) => {
   const params = useParams();
   const router = useRouter();
@@ -74,6 +84,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
       sizeId,
       isArchieved,
       isFeatured,
+      genderId,
     }: ProductType) => {
       const payload: ProductType = {
         name,
@@ -84,6 +95,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
         isFeatured,
         sizeId,
         price,
+        genderId,
       };
 
       if (initialData) {
@@ -183,7 +195,10 @@ const ProductForm: React.FC<ProductFormProps> = ({
       isFeatured: data.isFeatured,
       name: data.name,
       sizeId: data.sizeId,
+      genderId: data.genderId,
     };
+
+    console.log(data);
 
     mutate(payload);
   };
@@ -281,13 +296,40 @@ const ProductForm: React.FC<ProductFormProps> = ({
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select select Category" />
+                          <SelectValue placeholder="Select  Category" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         {categories?.map((category) => (
                           <SelectItem key={category.id} value={category.id}>
                             {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="genderId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Select Gender</FormLabel>
+
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select  Gender" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {genders?.map((gender) => (
+                          <SelectItem key={gender.id} value={gender.id}>
+                            {gender.name}
                           </SelectItem>
                         ))}
                       </SelectContent>

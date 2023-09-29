@@ -2,27 +2,20 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/actions/user";
 import * as z from "zod";
 import { StoreValidation } from "@/lib/validations/store";
+import { NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { storeId: string; billboardId: string } }
 ) {
   try {
-    const currentUser = await getCurrentUser();
-
-    if (!currentUser) {
-      return new Response("Unauthenticated", {
-        status: 401,
-      });
-    }
-
-    const store = await prisma.store.findUnique({
+    const billboard = await prisma.billboard.findUnique({
       where: {
-        id: params.storeId,
+        id: params.billboardId,
       },
     });
 
-    return new Response(JSON.stringify(store), {
+    return NextResponse.json(billboard, {
       status: 200,
     });
   } catch (error) {
