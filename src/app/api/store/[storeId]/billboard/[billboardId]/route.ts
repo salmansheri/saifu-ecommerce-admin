@@ -9,9 +9,9 @@ export async function GET(
   { params }: { params: { storeId: string; billboardId: string } }
 ) {
   try {
-    const billboard = await prisma.store.findUnique({
+    const billboard = await prisma.billboard.findUnique({
       where: {
-        id: params.storeId,
+        id: params.billboardId,
       },
     });
 
