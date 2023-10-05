@@ -1,7 +1,13 @@
 "use client";
 
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 import {
   Form,
   FormControl,
@@ -15,12 +21,14 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignUpType, SignUpValidation } from "@/lib/validations/user";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import ImageUpload from "../ui/image-upload";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 const SignUpForm = () => {
   const router = useRouter();
@@ -164,6 +172,21 @@ const SignUpForm = () => {
           </form>
         </Form>
       </CardContent>
+      <CardFooter>
+        <p>
+          Already Have an Account?{" "}
+          <Link
+            className={cn(
+              buttonVariants({
+                variant: "link",
+              })
+            )}
+            href="sign-in"
+          >
+            Sign in
+          </Link>
+        </p>
+      </CardFooter>
     </Card>
   );
 };

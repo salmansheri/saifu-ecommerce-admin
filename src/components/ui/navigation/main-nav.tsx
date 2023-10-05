@@ -2,9 +2,10 @@
 import Link from "next/link";
 import React from "react";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "../button";
+import { signOut } from "next-auth/react";
 
 interface MainNavProps {
   storeId: string;
@@ -18,6 +19,7 @@ interface MainNavProps {
 
 const MainNav: React.FC<MainNavProps> = ({ storeId, user }) => {
   const pathname = usePathname();
+  const router = useRouter();
 
   const routes = [
     {
@@ -68,7 +70,19 @@ const MainNav: React.FC<MainNavProps> = ({ storeId, user }) => {
           {route.title}
         </Link>
       ))}
-      {user ? <Button>Sign out</Button> : <Button>Sign in</Button>}
+      {user ? (
+        <Button
+          onClick={() =>
+            signOut({
+              callbackUrl: "/sign-in",
+            })
+          }
+        >
+          Sign out
+        </Button>
+      ) : (
+        <Button onClick={() => router.push("/sign-in")}>Sign in</Button>
+      )}
     </div>
   );
 };

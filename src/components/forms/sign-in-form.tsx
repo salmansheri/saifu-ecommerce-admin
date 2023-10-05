@@ -4,8 +4,14 @@ import { SignInType, SignInValidation } from "@/lib/validations/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Button, buttonVariants } from "../ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 import {
   Form,
   FormControl,
@@ -16,6 +22,8 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 const SignInForm = () => {
   const form = useForm<SignInType>({
@@ -88,6 +96,21 @@ const SignInForm = () => {
           </form>
         </Form>
       </CardContent>
+      <CardFooter>
+        <p>
+          New To Admin Dashboard?{" "}
+          <Link
+            className={cn(
+              buttonVariants({
+                variant: "link",
+              })
+            )}
+            href="/sign-up"
+          >
+            Sign up
+          </Link>
+        </p>
+      </CardFooter>
     </Card>
   );
 };
