@@ -198,8 +198,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
       genderId: data.genderId,
     };
 
-    console.log(data);
-
     mutate(payload);
   };
   return (

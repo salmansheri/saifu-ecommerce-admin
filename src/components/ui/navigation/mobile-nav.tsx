@@ -28,7 +28,6 @@ interface MobileNavProps {
 }
 
 const MobileNav: React.FC<MobileNavProps> = ({ storeId, user }) => {
-  console.log(user);
   const router = useRouter();
   const pathname = usePathname();
   const routes = [

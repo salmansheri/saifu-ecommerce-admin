@@ -1,5 +1,6 @@
 import { getUserStore } from "@/lib/actions/store";
 import { getCurrentUser } from "@/lib/actions/user";
+import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
 
 export default async function Home() {
@@ -8,7 +9,7 @@ export default async function Home() {
     return null;
   }
 
-  const store = await getUserStore(currentUser.id as string);
+  const store = await prisma.store.findFirst();
 
   if (store) {
     redirect(`/store/${store.id}/update`);

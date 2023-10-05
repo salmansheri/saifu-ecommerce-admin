@@ -29,8 +29,6 @@ export default async function ProductsPage({
     },
   });
 
-  console.log(products);
-
   const formattedProducts: ProductsColumnType[] = products.map((product) => ({
     id: product.id,
     name: product.name,
