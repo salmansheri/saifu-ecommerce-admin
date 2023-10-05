@@ -79,7 +79,6 @@ const SignUpForm = () => {
     };
 
     mutate(payload);
-    console.log(payload);
   };
 
   return (

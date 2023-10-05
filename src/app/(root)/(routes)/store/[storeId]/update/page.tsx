@@ -8,7 +8,7 @@ export default async function UpdateStorePage({
 }) {
   const { storeId } = params;
   const store = await getStoreById(storeId);
-  console.log(storeId);
+
   return (
     <div className="">
       {" "}

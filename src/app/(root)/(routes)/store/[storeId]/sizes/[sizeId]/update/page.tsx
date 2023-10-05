@@ -9,7 +9,6 @@ export default async function UpdateSizePage({
   params: { sizeId: string; storeId: string };
 }) {
   const size = await getSizeById(params.sizeId);
-  console.log(size);
 
   return (
     <div>
