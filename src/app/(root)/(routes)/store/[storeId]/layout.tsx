@@ -5,6 +5,7 @@ import {
   getUserStore,
 } from "@/lib/actions/store";
 import { getCurrentUser } from "@/lib/actions/user";
+import { prisma } from "@/lib/db";
 import { Store } from "@prisma/client";
 
 export default async function StoreLayout({
@@ -15,8 +16,8 @@ export default async function StoreLayout({
   params: { storeId: string };
 }) {
   const currentUser = await getCurrentUser();
-  const stores = await getStoresByUserId(currentUser?.id as string);
-  const store = await getStoreById(params.storeId);
+  const stores = await prisma.store.findMany();
+  const store = await prisma.store.findFirst();
   return (
     <div>
       {/* @ts-ignore  */}
