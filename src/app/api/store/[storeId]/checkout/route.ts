@@ -35,7 +35,7 @@ export async function POST(
 
   const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
 
-  productIds.forEach((product: any) => {
+  products?.forEach((product: any) => {
     line_items.push({
       quantity: 1,
       price_data: {
@@ -43,7 +43,7 @@ export async function POST(
         product_data: {
           name: product.name,
         },
-        unit_amount: product.price.toNumber() * 100,
+        unit_amount: Number(product.price) * 100,
       },
     });
   });

@@ -1,8 +1,8 @@
-import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/actions/user";
-import * as z from "zod";
-import { StoreValidation } from "@/lib/validations/store";
+import { prisma } from "@/lib/db";
+import { BillboardValidation } from "@/lib/validations/billboard";
 import { NextResponse } from "next/server";
+import * as z from "zod";
 
 export async function GET(
   request: Request,
@@ -25,7 +25,7 @@ export async function GET(
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { storeId: string; billboardId: string } }
 ) {
   try {
     const currentUser = await getCurrentUser();
@@ -37,25 +37,21 @@ export async function PATCH(
     }
     const body = await request.json();
 
-    const { name } = StoreValidation.parse(body);
+    const { imageUrl, label } = BillboardValidation.parse(body);
 
-    if (!name) {
-      return new Response("Invalid data", {
-        status: 400,
-      });
-    }
-
-    const store = await prisma.store.update({
+    const billboard = await prisma.billboard.update({
       where: {
-        id: params.storeId,
+        id: params.billboardId,
       },
       data: {
-        name,
+        imageUrl,
+        label,
       },
     });
 
-    return new Response(JSON.stringify(store));
+    return new Response(JSON.stringify(billboard));
   } catch (error) {
+    console.log(error);
     if (error instanceof z.ZodError) {
       return new Response("Not Allowed", {
         status: 422,

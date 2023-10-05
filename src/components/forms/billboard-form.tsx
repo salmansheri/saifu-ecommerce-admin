@@ -148,21 +148,29 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
   return (
     <Card className="lg:w-[50vw]">
       <CardHeader>
-        <div>
-          <CardTitle className="text-3xl">
-            {initialData ? "Update Billboard" : " Create Billboard"}
-          </CardTitle>
-          <CardDescription>
-            {initialData
-              ? "Update Your Billboard"
-              : "Create Your Billboard to Continue"}
-          </CardDescription>
+        <div className="flex  justify-between items-center">
+          <div>
+            <CardTitle className="text-3xl">
+              {initialData ? "Update Billboard" : " Create Billboard"}
+            </CardTitle>
+            <CardDescription>
+              {initialData
+                ? "Update Your Billboard"
+                : "Create Your Billboard to Continue"}
+            </CardDescription>
+          </div>
+          <div>
+            {initialData && (
+              <Button
+                onClick={() => onDelete()}
+                size="icon"
+                variant="destructive"
+              >
+                <TrashIcon className="h-5 w-5" />
+              </Button>
+            )}
+          </div>
         </div>
-        {initialData && (
-          <Button onClick={() => onDelete()} size="icon" variant="destructive">
-            <TrashIcon className="h-5 w-5" />
-          </Button>
-        )}
       </CardHeader>
       <CardContent>
         <Form {...form}>

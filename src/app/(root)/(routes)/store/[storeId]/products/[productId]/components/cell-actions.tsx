@@ -33,7 +33,7 @@ const CellActions: React.FC<CellActionsType> = ({ data }) => {
 
   const { mutate: onDelete } = useMutation({
     mutationFn: async () => {
-      await axios.delete(`/api/store/${params.storeId}/billboard/${data.id}`);
+      await axios.delete(`/api/store/${params.storeId}/products/${data.id}`);
     },
     onError: (error) => {
       return toast({
@@ -74,7 +74,7 @@ const CellActions: React.FC<CellActionsType> = ({ data }) => {
         <DropdownMenuItem
           className="flex gap-x-2"
           onClick={() =>
-            router.push(`/store/${params.storeId}/billboard/${data.id}/update`)
+            router.push(`/store/${params.storeId}/products/${data.id}/update`)
           }
         >
           <UpdateIcon className="text-blue-500 h-6 w-6" />

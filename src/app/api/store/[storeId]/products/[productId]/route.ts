@@ -62,7 +62,7 @@ export async function PATCH(
       });
     }
 
-    const product = await prisma.product.update({
+    await prisma.product.update({
       where: {
         id: params.productId,
       },
@@ -78,6 +78,19 @@ export async function PATCH(
         sizeId,
         isArchieved,
         isFeatured,
+      },
+    });
+
+    const product = await prisma.product.update({
+      where: {
+        id: params.productId,
+      },
+      data: {
+        images: {
+          createMany: {
+            data: [...images.map((image: { url: string }) => image)],
+          },
+        },
       },
     });
 
